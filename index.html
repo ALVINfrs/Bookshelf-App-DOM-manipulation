@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bookshelf App</title>
+
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header>
+      <h1><i class="fas fa-book"></i> Bookshelf App</h1>
+      <button id="themeToggle" data-testid="themeToggle">
+        <i class="fas fa-moon"></i>
+      </button>
+    </header>
+
+    <main>
+      <section id="welcomeMessage">
+        <h2>Selamat Datang, <span>Muhammad Alvin Faris</span></h2>
+      </section>
+
+      <section id="bookFormSection">
+        <h2><i class="fas fa-plus-circle"></i> Tambah Buku</h2>
+        <form id="bookForm" data-testid="bookForm">
+          <div>
+            <label for="bookFormTitle">Judul Buku</label>
+            <input
+              type="text"
+              id="bookFormTitle"
+              placeholder="Masukkan judul buku"
+              required
+              data-testid="bookFormTitleInput"
+            />
+          </div>
+          <div>
+            <label for="bookFormAuthor">Penulis</label>
+            <input
+              type="text"
+              id="bookFormAuthor"
+              placeholder="Masukkan nama penulis"
+              required
+              data-testid="bookFormAuthorInput"
+            />
+          </div>
+          <div>
+            <label for="bookFormYear">Tahun Terbit</label>
+            <input
+              type="number"
+              id="bookFormYear"
+              placeholder="Masukkan tahun terbit"
+              required
+              data-testid="bookFormYearInput"
+            />
+          </div>
+          <div>
+            <label>
+              <input
+                type="checkbox"
+                id="bookFormIsComplete"
+                data-testid="bookFormIsCompleteCheckbox"
+              />
+              Sudah Selesai Dibaca
+            </label>
+          </div>
+          <button
+            class="btn-add"
+            type="submit"
+            data-testid="bookFormSubmitButton"
+          >
+            <i class="fas fa-save"></i> Simpan Buku
+          </button>
+        </form>
+      </section>
+
+      <section id="searchSection">
+        <h2><i class="fas fa-search"></i> Cari Buku</h2>
+        <input
+          type="text"
+          id="searchInput"
+          placeholder="Cari buku berdasarkan judul..."
+          data-testid="searchInput"
+        />
+      </section>
+
+      <section id="filterSection">
+        <h2><i class="fas fa-filter"></i> Filter Buku</h2>
+        <select id="filter" data-testid="filterSelect">
+          <option value="all">Semua Buku</option>
+          <option value="incomplete">Belum Dibaca</option>
+          <option value="complete">Sudah Dibaca</option>
+        </select>
+      </section>
+
+      <section id="bookLists">
+        <div id="incompleteBookshelf">
+          <h2><i class="fas fa-book-open"></i> Belum Selesai Dibaca</h2>
+          <div id="incompleteBookList" data-testid="incompleteBookList">
+            <div data-bookid="123123123" data-testid="bookItem">
+              <h3 data-testid="bookItemTitle">Judul Buku 1</h3>
+              <p data-testid="bookItemAuthor">Penulis: Penulis Buku 1</p>
+              <p data-testid="bookItemYear">Tahun: 2030</p>
+              <div>
+                <button data-testid="bookItemIsCompleteButton">
+                  Selesai Dibaca
+                </button>
+                <button data-testid="bookItemDeleteButton">Hapus Buku</button>
+                <button data-testid="bookItemEditButton">Edit Buku</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="completeBookshelf">
+          <h2><i class="fas fa-check-circle"></i> Sudah Selesai Dibaca</h2>
+          <div id="completeBookList" data-testid="completeBookList">
+            <div data-bookid="456456456" data-testid="bookItem">
+              <h3 data-testid="bookItemTitle">Judul Buku 2</h3>
+              <p data-testid="bookItemAuthor">Penulis: Penulis Buku 2</p>
+              <p data-testid="bookItemYear">Tahun: 2030</p>
+              <div>
+                <button data-testid="bookItemIsCompleteButton">
+                  Selesai Dibaca
+                </button>
+                <button data-testid="bookItemDeleteButton">Hapus Buku</button>
+                <button data-testid="bookItemEditButton">Edit Buku</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <p>
+        &copy; 2025 Bookshelf App by Muhammad Alvin Faris. All Rights Reserved.
+      </p>
+    </footer>
+
+    <div id="toast" class="toast" data-testid="toast"></div>
+
+    <script src="main.js"></script>
+  </body>
+</html>
