@@ -4,15 +4,43 @@ const completeBookList = document.getElementById("completeBookList");
 const filter = document.getElementById("filter");
 const toast = document.getElementById("toast");
 const themeToggle = document.getElementById("themeToggle");
-const searchInput = document.getElementById("searchInput");
+const searchForm = document.getElementById("searchBook");
+const searchBookTitle = document.getElementById("searchBookTitle");
 
 const STORAGE_KEY = "BOOKSHELF_APP";
 
 let books = [];
+let filteredBooks = [];
+let toastTimeout;
+
+const DUMMY_BOOKS = [
+  {
+    id: 1,
+    title: "Judul Buku 1",
+    author: "Penulis 1",
+    year: 2021,
+    isComplete: false,
+    image: "https://via.placeholder.com/60x80?text=Buku+1",
+  },
+  {
+    id: 2,
+    title: "Judul Buku 2",
+    author: "Penulis 2",
+    year: 2022,
+    isComplete: true,
+    image: "https://via.placeholder.com/60x80?text=Buku+2",
+  },
+];
 
 function loadBooks() {
-  const data = localStorage.getItem(STORAGE_KEY);
-  books = data ? JSON.parse(data) : [];
+  const storedBooks = JSON.parse(localStorage.getItem(STORAGE_KEY));
+  if (storedBooks) {
+    books = storedBooks;
+  } else {
+    books = [...DUMMY_BOOKS];
+    saveBooks();
+  }
+  applyFilters();
   renderBooks();
 }
 
@@ -20,49 +48,9 @@ function saveBooks() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(books));
 }
 
-function generateBookCard(book) {
-  const bookItem = document.createElement("div");
-  bookItem.classList.add("book-item");
-  bookItem.dataset.bookid = book.id;
-
-  bookItem.innerHTML = `
-    <img src="https://picsum.photos/60/80?random=1" alt="Buku"  ${
-      book.title
-    }" />
-    <div>
-      <h3>${book.title}</h3>
-      <p>Penulis: ${book.author}</p>
-      <p>Tahun: ${book.year}</p>
-      <div class="actions">
-        <button class="complete"><i class="fas fa-check"></i> ${
-          book.isComplete ? "Belum Dibaca" : "Selesai Dibaca"
-        }</button>
-        <button class="delete"><i class="fas fa-trash"></i> Hapus</button>
-      </div>
-    </div>
-  `;
-
-  const completeButton = bookItem.querySelector(".complete");
-  completeButton.addEventListener("click", () => toggleBookCompletion(book.id));
-
-  const deleteButton = bookItem.querySelector(".delete");
-  deleteButton.addEventListener("click", () => deleteBook(book.id));
-
-  return bookItem;
-}
-
 function renderBooks() {
   incompleteBookList.innerHTML = "";
   completeBookList.innerHTML = "";
-
-  const searchQuery = searchInput.value.trim().toLowerCase();
-  const filteredBooks = books.filter((book) => {
-    if (filter.value === "incomplete" && book.isComplete) return false;
-    if (filter.value === "complete" && !book.isComplete) return false;
-    if (searchQuery && !book.title.toLowerCase().includes(searchQuery))
-      return false;
-    return true;
-  });
 
   filteredBooks.forEach((book) => {
     const bookCard = generateBookCard(book);
@@ -74,76 +62,154 @@ function renderBooks() {
   });
 }
 
+function generateBookCard(book) {
+  const bookItem = document.createElement("div");
+  bookItem.classList.add("book-item");
+  bookItem.setAttribute("data-bookid", book.id);
+  bookItem.setAttribute("data-testid", "bookItem");
+
+  bookItem.innerHTML = `
+    <img src="${book.image}" alt="Buku" />
+    <div>
+      <h3 data-testid="bookItemTitle">${book.title}</h3>
+      <p data-testid="bookItemAuthor">Penulis: ${book.author}</p>
+      <p data-testid="bookItemYear">Tahun: ${book.year}</p>
+      <div class="actions">
+        <button class="complete" data-testid="bookItemIsCompleteButton">
+          ${book.isComplete ? "Belum Dibaca" : "Selesai Dibaca"}
+        </button>
+        <button class="delete" data-testid="bookItemDeleteButton">Hapus</button>
+        <button class="edit">Edit</button>
+      </div>
+    </div>
+  `;
+
+  bookItem
+    .querySelector(".complete")
+    .addEventListener("click", () => toggleBookCompletion(book.id));
+  bookItem
+    .querySelector(".delete")
+    .addEventListener("click", () => deleteBook(book.id));
+  bookItem
+    .querySelector(".edit")
+    .addEventListener("click", () => editBook(book.id));
+
+  return bookItem;
+}
+
 function addBook(book) {
   books.push(book);
   saveBooks();
+  applyFilters();
   renderBooks();
   showToast("Buku berhasil ditambahkan!");
 }
 
-function toggleBookCompletion(bookId) {
-  const book = books.find((b) => b.id === bookId);
+function toggleBookCompletion(id) {
+  const book = books.find((b) => b.id === id);
   if (book) {
     book.isComplete = !book.isComplete;
-    saveBooks();
-    renderBooks();
-    showToast("Buku berhasil dipindahkan!");
+    updateBooks("Buku berhasil dipindahkan!");
   }
 }
 
-function deleteBook(bookId) {
-  books = books.filter((b) => b.id !== bookId);
+function deleteBook(id) {
+  books = books.filter((b) => b.id !== id);
+  updateBooks("Buku berhasil dihapus!");
+}
+
+function editBook(id) {
+  const book = books.find((b) => b.id === id);
+  if (book) {
+    bookForm["bookFormTitle"].value = book.title;
+    bookForm["bookFormAuthor"].value = book.author;
+    bookForm["bookFormYear"].value = book.year;
+    bookForm["bookFormIsComplete"].checked = book.isComplete;
+
+    bookForm.dataset.editing = id;
+    bookForm.querySelector("button[type='submit']").textContent = "Update Buku";
+  }
+}
+
+function updateBooks(message) {
   saveBooks();
+  applyFilters();
   renderBooks();
-  showToast("Buku berhasil dihapus!");
+  showToast(message);
 }
 
 function showToast(message) {
+  clearTimeout(toastTimeout);
   toast.textContent = message;
   toast.classList.add("show");
-  setTimeout(() => {
-    toast.classList.remove("show");
-  }, 3000);
+  toastTimeout = setTimeout(() => toast.classList.remove("show"), 3000);
 }
+
+function applyFilters() {
+  const searchQuery = searchBookTitle.value.trim().toLowerCase();
+  const filterValue = filter.value;
+
+  filteredBooks = books.filter((book) => {
+    const matchesSearch = book.title.toLowerCase().includes(searchQuery);
+    const matchesFilter =
+      filterValue === "all" ||
+      (filterValue === "complete" && book.isComplete) ||
+      (filterValue === "incomplete" && !book.isComplete);
+    return matchesSearch && matchesFilter;
+  });
+}
+
+searchForm.addEventListener("submit", (e) => {
+  e.preventDefault();
+  applyFilters();
+  renderBooks();
+});
+
+filter.addEventListener("change", () => {
+  applyFilters();
+  renderBooks();
+});
 
 bookForm.addEventListener("submit", (e) => {
   e.preventDefault();
 
-  const title = document.getElementById("bookFormTitle").value.trim();
-  const author = document.getElementById("bookFormAuthor").value.trim();
-  const year = parseInt(
-    document.getElementById("bookFormYear").value.trim(),
-    10
-  );
-  const isComplete = document.getElementById("bookFormIsComplete").checked;
+  const title = bookForm["bookFormTitle"].value.trim();
+  const author = bookForm["bookFormAuthor"].value.trim();
+  const year = parseInt(bookForm["bookFormYear"].value.trim(), 10);
+  const isComplete = bookForm["bookFormIsComplete"].checked;
 
   if (title && author && year) {
-    const newBook = {
-      id: Date.now(),
-      title,
-      author,
-      year,
-      isComplete,
-    };
-    addBook(newBook);
+    const editingId = bookForm.dataset.editing;
+    if (editingId) {
+      const book = books.find((b) => b.id === parseInt(editingId, 10));
+      if (book) {
+        Object.assign(book, { title, author, year, isComplete });
+        updateBooks("Buku berhasil diperbarui!");
+      }
+      delete bookForm.dataset.editing;
+      bookForm.querySelector("button[type='submit']").textContent =
+        "Simpan Buku";
+    } else {
+      addBook({
+        id: Date.now(),
+        title,
+        author,
+        year,
+        isComplete,
+        image: "https://via.placeholder.com/60x80?text=New+Buku",
+      });
+    }
+
     bookForm.reset();
   }
 });
 
-filter.addEventListener("change", renderBooks);
-
-searchInput.addEventListener("input", renderBooks);
-
 themeToggle.addEventListener("click", () => {
   document.body.classList.toggle("dark");
   const icon = themeToggle.querySelector("i");
-  if (document.body.classList.contains("dark")) {
-    icon.classList.remove("fa-moon");
-    icon.classList.add("fa-sun");
-  } else {
-    icon.classList.remove("fa-sun");
-    icon.classList.add("fa-moon");
-  }
+  icon.className = document.body.classList.contains("dark")
+    ? "fas fa-sun"
+    : "fas fa-moon";
 });
 
 loadBooks();

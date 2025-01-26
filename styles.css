@@ -53,7 +53,6 @@ header h1 i {
   transform: rotate(180deg);
 }
 
-/* Styling untuk welcomeMessage */
 #welcomeMessage {
   text-align: center;
   font-family: "Arial", sans-serif;
@@ -65,7 +64,6 @@ header h1 i {
   animation: fadeInAndSlide 3s ease-in-out, colorChange 6s infinite alternate;
 }
 
-/* Menambahkan animasi pada welcome message */
 #welcomeMessage h2 {
   font-size: 3em;
   color: #fff;
@@ -75,7 +73,6 @@ header h1 i {
   transform: translateY(50px);
 }
 
-/* Animasi untuk memperkenalkan pesan dengan efek slide dan fade-in */
 @keyframes fadeInAndSlide {
   0% {
     opacity: 0;
@@ -87,7 +84,6 @@ header h1 i {
   }
 }
 
-/* Animasi untuk perubahan warna background */
 @keyframes colorChange {
   0% {
     background: linear-gradient(135deg, #6e7cfc, #f7c9ff);
@@ -100,7 +96,6 @@ header h1 i {
   }
 }
 
-/* Animasi untuk elemen teks muncul dengan efek pop-up */
 @keyframes textPopUp {
   0% {
     transform: translateY(50px);
@@ -116,7 +111,6 @@ header h1 i {
   }
 }
 
-/* Animasi untuk perubahan warna teks secara halus */
 @keyframes textColorChange {
   0% {
     color: #fff;
@@ -135,7 +129,6 @@ header h1 i {
   animation: textColorHighlight 4s infinite alternate;
 }
 
-/* Animasi untuk highlight nama */
 @keyframes textColorHighlight {
   0% {
     color: #ffec47;
@@ -326,4 +319,114 @@ body.dark #searchSection input {
   background: #3b4a63;
   color: #f3f4f6;
   border: 1px solid #3b4a63;
+}
+
+.book-item {
+  display: flex;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  margin: 10px 0;
+  padding: 10px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.book-item:hover {
+  transform: scale(1.02);
+}
+
+.book-item div {
+  margin-left: 15px;
+  flex-grow: 1;
+}
+
+.book-item h3 {
+  font-size: 1.2rem;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.book-item p {
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+}
+
+button {
+  background-color: #4caf50;
+  border: none;
+  padding: 8px 15px;
+  margin-left: 5px;
+  color: white;
+  border-radius: 5px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  display: flex;
+  align-items: center;
+}
+
+button i {
+  margin-right: 5px;
+}
+
+button:hover {
+  opacity: 0.8;
+}
+
+button.complete {
+  background-color: #007bff;
+}
+
+button.complete:hover {
+  background-color: #0056b3;
+}
+
+button.delete {
+  background-color: #f44336;
+}
+
+button.delete:hover {
+  background-color: #d32f2f;
+}
+
+button.edit {
+  background-color: #ff9800;
+}
+
+button.edit:hover {
+  background-color: #e65100;
+}
+
+button i {
+  font-size: 1.2rem;
+}
+
+#toast {
+  visibility: hidden;
+  min-width: 250px;
+  background-color: #333;
+  color: #fff;
+  text-align: center;
+  border-radius: 2px;
+  padding: 16px;
+  position: fixed;
+  z-index: 1;
+  left: 50%;
+  bottom: 30px;
+  transform: translateX(-50%);
+  opacity: 0;
+  transition: opacity 0.5s;
+}
+
+#toast.show {
+  visibility: visible;
+  opacity: 1;
 }

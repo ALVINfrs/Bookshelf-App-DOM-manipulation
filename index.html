@@ -79,12 +79,19 @@
 
       <section id="searchSection">
         <h2><i class="fas fa-search"></i> Cari Buku</h2>
-        <input
-          type="text"
-          id="searchInput"
-          placeholder="Cari buku berdasarkan judul..."
-          data-testid="searchInput"
-        />
+
+        <form id="searchBook" data-testid="searchBookForm">
+          <label for="searchBookTitle">Judul</label>
+          <input
+            type="text"
+            id="searchBookTitle"
+            placeholder="Cari buku berdasarkan judul..."
+            data-testid="searchBookFormTitleInput"
+          />
+          <button type="submit" data-testid="searchBookFormSubmitButton">
+            Cari
+          </button>
+        </form>
       </section>
 
       <section id="filterSection">
